@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'app_clube',
     'app_home',
+    'app_localizacao',
 ]
 
 MIDDLEWARE = [
