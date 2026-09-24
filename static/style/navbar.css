@@ -1,0 +1,73 @@
+.navbar{
+    background-color: #1a1a24;
+    padding: 1rem 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/*----Logo---*/
+img {
+    height: 100px; /* Define uma altura fixa para sua logo não quebrar o layout */
+    width: auto;
+    object-fit: contain;
+}
+span{
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+span:hover {
+  color: #4CAF50;
+}
+.navbar-nav {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 1.5rem;
+  margin-left: auto; /* Empurra os links para a direita no desktop */
+}
+.nav-link {
+  color: #e0e0e0;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  padding: 0.5rem 0;
+}
+.nav-link:hover,
+.nav-link.active {
+  color: #4CAF50; /* Verde futebol */
+}
+navbar-toggler {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem;
+}
+
+
+
+/* ===================================
+   RESPONSIVIDADE (Mobile)
+   =================================== */
+@media (max-width: 991.98px) {
+  .navbar-container {
+    flex-wrap: wrap;
+  }
+
+  .navbar-collapse {
+    flex-basis: 100%;
+  }
+
+  .navbar-nav {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    margin-left: 0;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 0.5rem 0;
+  }
+}

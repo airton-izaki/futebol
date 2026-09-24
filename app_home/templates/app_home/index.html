@@ -1,0 +1,12 @@
+{% extends 'app_home/base.html' %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% load static %}
+
+{% block content %}
+    <h1>Home Page</h1>    
+    <a  class = "btn" href = "{% url 'clube' %}">Clube</a>
+{% endblock %}

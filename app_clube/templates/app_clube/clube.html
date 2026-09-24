@@ -1,0 +1,360 @@
+{% extends 'app_home/base.html' %}
+{% load static %}
+
+{% block title %}Cadastro de Clube{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-9">
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-shield-fill me-2"></i> Cadastro de Clube de Futebol
+                    </h4>
+                </div>
+
+                <div class="card-body p-4">
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+
+                        <!-- Identificação -->
+                        <h6 class="text-success fw-bold border-bottom pb-2 mb-3">Identificação</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-8">
+                                <label for="{{ form.nome.id_for_label }}" class="form-label fw-semibold">
+                                    Nome do Clube <span class="text-danger">*</span>
+                                </label>
+                                {{ form.nome }}
+                                {% if form.nome.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.nome.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4">
+                                <label for="{{ form.sigla.id_for_label }}" class="form-label fw-semibold">
+                                    Sigla <span class="text-danger">*</span>
+                                </label>
+                                {{ form.sigla }}
+                                {% if form.sigla.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.sigla.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4">
+                                <label for="{{ form.fundacao.id_for_label }}" class="form-label fw-semibold">
+                                    Data de Fundação <span class="text-danger">*</span>
+                                </label>
+                                {{ form.fundacao }}
+                                {% if form.fundacao.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.fundacao.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4">
+                                <label for="{{ form.divisao.id_for_label }}" class="form-label fw-semibold">
+                                    Divisão <span class="text-danger">*</span>
+                                </label>
+                                {{ form.divisao }}
+                                {% if form.divisao.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.divisao.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4">
+                                <label for="{{ form.escudo.id_for_label }}" class="form-label fw-semibold">Escudo</label>
+                                {{ form.escudo }}
+                                {% if form.escudo.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.escudo.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Localização -->
+                        <h6 class="text-success fw-bold border-bottom pb-2 mb-3">Localização</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label for="{{ form.estado.id_for_label }}" class="form-label fw-semibold">
+                                    Estado <span class="text-danger">*</span>
+                                </label>
+                                {{ form.estado }}
+                                {% if form.estado.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.estado.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-8">
+                                <label for="{{ form.cidade.id_for_label }}" class="form-label fw-semibold">
+                                    Cidade <span class="text-danger">*</span>
+                                </label>
+                                <div class="position-relative">
+                                    {{ form.cidade }}
+                                    <ul id="cidade-dropdown"
+                                        class="list-group shadow-sm"
+                                        style="display:none; position:absolute; z-index:1000; width:100%; max-height:220px; overflow-y:auto;">
+                                    </ul>
+                                </div>
+                                {% if form.cidade.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.cidade.errors.0 }}</div>
+                                {% endif %}
+                                <div id="cidade-hint" class="form-text text-muted" style="display:none;">
+                                    Selecione um estado primeiro.
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <label for="{{ form.estadio.id_for_label }}" class="form-label fw-semibold">Estádio</label>
+                                {{ form.estadio }}
+                                {% if form.estadio.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.estadio.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Identidade Visual -->
+                        <h6 class="text-success fw-bold border-bottom pb-2 mb-3">Identidade Visual</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="{{ form.cor_primaria.id_for_label }}" class="form-label fw-semibold">Cor Primária</label>
+                                {{ form.cor_primaria }}
+                                {% if form.cor_primaria.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.cor_primaria.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.cor_secundaria.id_for_label }}" class="form-label fw-semibold">Cor Secundária</label>
+                                {{ form.cor_secundaria }}
+                                {% if form.cor_secundaria.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.cor_secundaria.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Contato -->
+                        <h6 class="text-success fw-bold border-bottom pb-2 mb-3">Contato</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="{{ form.website.id_for_label }}" class="form-label fw-semibold">Site</label>
+                                {{ form.website }}
+                                {% if form.website.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.website.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Informações Adicionais -->
+                        <h6 class="text-success fw-bold border-bottom pb-2 mb-3">Informações Adicionais</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-12">
+                                <label for="{{ form.descricao.id_for_label }}" class="form-label fw-semibold">Descrição</label>
+                                {{ form.descricao }}
+                                {% if form.descricao.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.descricao.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    {{ form.ativo }}
+                                    <label class="form-check-label fw-semibold" for="{{ form.ativo.id_for_label }}">
+                                        Clube Ativo
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a href="{% url 'index' %}" class="btn btn-outline-secondary">Cancelar</a>
+                            <button type="reset" class="btn btn-outline-warning">Limpar</button>
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="bi bi-save me-1"></i> Salvar Clube
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Lista de Clubes Cadastrados -->
+    {% if clubes %}
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <h5 class="fw-bold mb-3">Clubes Cadastrados</h5>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-success">
+                        <tr>
+                            <th>Escudo</th>
+                            <th>Nome</th>
+                            <th>Sigla</th>
+                            <th>Cidade/Estado</th>
+                            <th>Divisão</th>
+                            <th>Fundação</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for clube in clubes %}
+                        <tr>
+                            <td>
+                                {% if clube.escudo %}
+                                    <img src="{{ clube.escudo.url }}" alt="{{ clube.sigla }}" width="36" height="36" style="object-fit:contain;">
+                                {% else %}
+                                    <span class="badge bg-secondary">sem escudo</span>
+                                {% endif %}
+                            </td>
+                            <td class="fw-semibold">{{ clube.nome }}</td>
+                            <td><span class="badge bg-success">{{ clube.sigla }}</span></td>
+                            <td>{{ clube.cidade }}/{{ clube.estado }}</td>
+                            <td>{{ clube.get_divisao_display }}</td>
+                            <td>{{ clube.fundacao|date:"d/m/Y" }}</td>
+                            <td>
+                                {% if clube.ativo %}
+                                    <span class="badge bg-success">Ativo</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Inativo</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+(function () {
+    const estadoSel  = document.getElementById('{{ form.estado.auto_id }}');
+    const cidadeInp  = document.getElementById('{{ form.cidade.auto_id }}');
+    const dropdown   = document.getElementById('cidade-dropdown');
+    const hint       = document.getElementById('cidade-hint');
+
+    let debounceTimer = null;
+
+    /* Fecha o dropdown ao clicar fora */
+    document.addEventListener('click', (e) => {
+        if (!cidadeInp.contains(e.target) && !dropdown.contains(e.target)) {
+            fecharDropdown();
+        }
+    });
+
+    estadoSel.addEventListener('change', () => {
+        cidadeInp.value = '';
+        fecharDropdown();
+        hint.style.display = estadoSel.value ? 'none' : 'block';
+    });
+
+    cidadeInp.addEventListener('input', () => {
+        const uf = estadoSel.value;
+        const q  = cidadeInp.value.trim();
+
+        if (!uf) {
+            hint.style.display = 'block';
+            fecharDropdown();
+            return;
+        }
+        hint.style.display = 'none';
+
+        if (q.length < 2) {
+            fecharDropdown();
+            return;
+        }
+
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => buscarCidades(uf, q), 250);
+    });
+
+    cidadeInp.addEventListener('keydown', (e) => {
+        const items = dropdown.querySelectorAll('.list-group-item');
+        const active = dropdown.querySelector('.list-group-item.active');
+        if (!items.length) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            const next = active ? active.nextElementSibling : items[0];
+            if (next) { active && active.classList.remove('active'); next.classList.add('active'); next.scrollIntoView({block:'nearest'}); }
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            const prev = active ? active.previousElementSibling : items[items.length - 1];
+            if (prev) { active && active.classList.remove('active'); prev.classList.add('active'); prev.scrollIntoView({block:'nearest'}); }
+        } else if (e.key === 'Enter' && active) {
+            e.preventDefault();
+            selecionar(active.textContent);
+        } else if (e.key === 'Escape') {
+            fecharDropdown();
+        }
+    });
+
+    async function buscarCidades(uf, q) {
+        /* 1ª tentativa: endpoint local */
+        try {
+            const resp = await fetch(`/api/cidades/?uf=${uf}&q=${encodeURIComponent(q)}`);
+            if (resp.ok) {
+                const cidades = await resp.json();
+                if (Array.isArray(cidades) && cidades.length > 0) {
+                    renderDropdown(cidades);
+                    return;
+                }
+            }
+        } catch (_) { /* segue para fallback */ }
+
+        /* Fallback: API pública do IBGE */
+        try {
+            const resp = await fetch(
+                `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios?orderBy=nome`
+            );
+            if (resp.ok) {
+                const municipios = await resp.json();
+                const filtrados = municipios
+                    .map(m => m.nome)
+                    .filter(nome => nome.toLowerCase().includes(q.toLowerCase()));
+                renderDropdown(filtrados.slice(0, 50));
+            }
+        } catch (_) {
+            fecharDropdown();
+        }
+    }
+
+    function renderDropdown(cidades) {
+        dropdown.innerHTML = '';
+        if (!cidades.length) { fecharDropdown(); return; }
+
+        cidades.forEach(nome => {
+            const li = document.createElement('li');
+            li.className = 'list-group-item list-group-item-action py-1 px-2';
+            li.style.cursor = 'pointer';
+            li.textContent = nome;
+            li.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                selecionar(nome);
+            });
+            dropdown.appendChild(li);
+        });
+
+        dropdown.style.display = 'block';
+    }
+
+    function selecionar(nome) {
+        cidadeInp.value = nome;
+        fecharDropdown();
+    }
+
+    function fecharDropdown() {
+        dropdown.style.display = 'none';
+        dropdown.innerHTML = '';
+    }
+})();
+</script>
+{% endblock %}
