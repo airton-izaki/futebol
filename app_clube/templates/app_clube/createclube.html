@@ -1,0 +1,395 @@
+{% extends 'app_home/base.html' %}
+
+{% load static %}
+
+{% block title %}
+    Cadastrar Clube
+{% endblock %}
+
+{% block content %}
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card-custom {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        .card-header-custom {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-top-left-radius: 16px !important;
+            border-top-right-radius: 16px !important;
+            color: #ffffff;
+            padding: 1.5rem;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9rem;
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 0.65rem 0.9rem;
+            border: 1px solid #ced4da;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #2a5298;
+            box-shadow: 0 0 0 0.2rem rgba(42, 82, 152, 0.15);
+        }
+        .btn-salvar {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .btn-salvar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(56, 239, 125, 0.4);
+            color: #fff;
+        }
+        .secao-identidade-visual {
+            grid-column: 1 / -1;
+            border-bottom: 1px solid #d9dee5;
+            color: #198754;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin: 0.5rem 0 0;
+            padding-bottom: 0.45rem;
+        }
+    </style>
+
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card card-custom">
+                    <!-- Cabeçalho Dinâmico -->
+                    <div class="card-header card-header-custom d-flex align-items-center justify-content-between">
+                        <div>
+                            <h4 class="mb-0 font-weight-bold"><i class="fa-solid fa-shield-halved me-2"></i>
+                                <i class="fa-solid fa-shield-halved me-2"></i>
+                                {% if object %}
+                                    Editar Clube: {{ object.nome_clube }}
+                                {% else %}
+                                    Novo Clube
+                                {% endif %}                        
+                            </h4>                  
+                            <small class="text-white-50">
+                                {% if object %}
+                                    Atualize os dados do clube cadastrado
+                                {% else %}
+                                    Preencha os dados abaixo para cadastrar o clube na plataforma
+                                {% endif %}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        
+                        <!-- Alerta de Resposta -->
+                        <div id="alertBox" class="alert d-none" role="alert"></div>
+
+                        <form id="formClube" data-pk="{% if object %}{{ object.pk }}{% endif %}">
+                            {% csrf_token %}
+
+                            <div class="row g-3">
+                                <!-- Nome Oficial -->
+                                <div class="col-md-7">
+                                    <label for="nome_clube" class="form-label">Nome Oficial *</label>
+                                    <input type="text" class="form-control" id="nome_clube" name="nome_clube" placeholder="Ex: Chapecoense Associação de Futebol" value="{% if object %}{{ object.nome }}{% endif %}" required>
+                                </div>
+
+                                <!-- Nome Conhecido (Nickname) -->
+                                <div class="col-md-5">
+                                    <label for="nickname" class="form-label">Nome Conhecido / Apelido *</label>
+                                    <input type="text" class="form-control" id="nickname" name="nickname" placeholder="Ex: Chapecoense" value="{% if object %}{{ object.nome_clube }}{% endif %}" required>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="sigla" class="form-label">Sigla</label>
+                                    <input type="text" class="form-control" id="sigla" name="sigla" placeholder="Ex: FFC" value="{% if object %}{{ object.sigla }}{% endif %}">
+                                </div>
+
+                                <!-- Data de Fundação -->
+                                <div class="col-md-4">
+                                    <label for="data_fundacao" class="form-label">Data de Fundação *</label>
+                                    <input type="date" class="form-control" id="data_fundacao" name="data_fundacao" value="{% if object %}{{ object.fundacao|date:'Y-m-d' }}{% endif %}" required>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="gestao" class="form-label">Modelo de Gestão *</label>
+                                    <select class="form-select" id="gestao" name="gestao" required>
+                                        <option value="ASSOCIATIVO" {% if not object or object.gestao == 'ASSOCIATIVO' %}selected{% endif %}>Associativo</option>
+                                        <option value="SAF" {% if object.gestao == 'SAF' %}selected{% endif %}>SAF</option>
+                                        <option value="PRIVADO" {% if object.gestao == 'PRIVADO' %}selected{% endif %}>Privado</option>
+                                        <option value="HIBRIDO" {% if object.gestao == 'HIBRIDO' %}selected{% endif %}>Híbrido</option>
+                                    </select>
+                                </div>
+                                <!-- Estado -->
+                                <div class="col-md-4">
+                                    <label for="select_estado" class="form-label">Estado *</label>
+                                    <select class="form-select" id="select_estado"
+                                            data-current="{% if object %}{{ estado_atual_codigo }}{% endif %}">
+                                        <option value="">Selecione…</option>
+                                    </select>
+                                </div>
+
+                                <!-- Cidade com autocomplete -->
+                                <div class="col-md-5" style="position:relative;">
+                                    <label for="input_cidade" class="form-label">Cidade *</label>
+                                    <input type="text" class="form-control" id="input_cidade" autocomplete="off"
+                                           placeholder="Selecione o estado e digite o nome…"
+                                           data-current-ibge="{% if object %}{{ cidade_atual_codigo }}{% endif %}"
+                                           data-current-nome="{% if object %}{{ object.cidade }}{% endif %}">
+                                    <ul id="cidade_sugestoes"
+                                        style="display:none;position:absolute;z-index:1000;width:100%;
+                                               background:#fff;border:1px solid #ced4da;border-radius:0 0 8px 8px;
+                                               max-height:220px;overflow-y:auto;padding:0;margin:0;list-style:none;">
+                                    </ul>
+                                </div>
+
+                                <!-- Código IBGE (somente leitura, preenchido automaticamente) -->
+                                <div class="col-md-3">
+                                    <label for="codigo_ibge" class="form-label">Código IBGE</label>
+                                    <input type="text" class="form-control" id="codigo_ibge" name="codigo_ibge"
+                                           value="{% if object %}{{ cidade_atual_codigo }}{% endif %}"
+                                           readonly tabindex="-1">
+                                    <div class="form-text">Preenchido automaticamente.</div>
+                                </div>
+
+                                <!-- URL do Escudo -->
+                                <div class="col-12">
+                                    <label for="escudo" class="form-label">URL do Escudo (Opcional)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-link"></i></span>
+                                        <input type="url" class="form-control" id="escudo" name="escudo" placeholder="https://exemplo.com/escudo.png" value="{% if object %}{{ object.escudo }}{% endif %}">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="estadio_oficial" class="form-label">Estádio Oficial</label>
+                                    <input type="text" class="form-control" id="estadio_oficial" name="estadio_oficial" placeholder="Nome do estádio" value="{% if object %}{{ object.estadio }}{% endif %}">
+                                </div>
+                                <div class="col-12 secao-identidade-visual">Identidade Visual</div>
+                                <div class="col-md-4">
+                                    <label for="cor_principal" class="form-label">Cor Principal</label>
+                                    <input type="text" class="form-control" id="cor_principal" name="cor_principal" placeholder="Ex: Preto" value="{% if object %}{{ object.cor_primaria }}{% endif %}">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="cor_secundaria" class="form-label">Cor Secundária</label>
+                                    <input type="text" class="form-control" id="cor_secundaria" name="cor_secundaria" placeholder="Ex: Branco" value="{% if object %}{{ object.cor_secundaria }}{% endif %}">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="outra_cor" class="form-label">Cor Terciária</label>
+                                    <input type="text" class="form-control" id="outra_cor" name="outra_cor" placeholder="Ex: Vermelho" value="{% if object %}{{ object.cor_terciaria }}{% endif %}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="site_oficial" class="form-label">Site Oficial</label>
+                                    <input type="url" class="form-control" id="site_oficial" name="site_oficial" placeholder="https://exemplo.com.br" value="{% if object %}{{ object.website }}{% endif %}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="observacao" class="form-label">Observação</label>
+                                    <textarea class="form-control" id="observacao" name="observacao" rows="2">{% if object %}{{ object.descricao }}{% endif %}</textarea>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="ativo" name="ativo" {% if not object or object.ativo %}checked{% endif %}>
+                                        <label class="form-check-label" for="ativo">Clube Ativo</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <!-- Botões Dinâmicos -->
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href = "{% url 'clube' %}" class = "btn btn-light px-4">Cancelar</a>
+                                <button type="submit" class="btn btn-salvar" id="btnSalvar">
+                                    <i class="fa-solid fa-check me-2"></i>
+                                    {% if object %}
+                                        Atualizar Clube
+                                    {% else %}
+                                        Cadastrar Clube
+                                    {% endif %}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+// ── Estado / Cidade ────────────────────────────────────────────────────────
+const selEstado   = document.getElementById('select_estado');
+const inputCidade = document.getElementById('input_cidade');
+const sugestoes   = document.getElementById('cidade_sugestoes');
+const inputIbge   = document.getElementById('codigo_ibge');
+
+let debounceTimer = null;
+
+// Carrega lista de estados no select
+async function carregarEstados() {
+    const res = await fetch('/api/estados/?format=json');
+    const data = await res.json();
+    const estados = data.results ?? data;
+    const currentEstado = selEstado.dataset.current;
+    estados.forEach(e => {
+        const opt = new Option(e.nome_estado, e.codigo_ibge);
+        if (String(e.codigo_ibge) === String(currentEstado)) opt.selected = true;
+        selEstado.appendChild(opt);
+    });
+    // No modo edição, pré-preenche o nome da cidade
+    if (inputCidade.dataset.currentNome) {
+        inputCidade.value = inputCidade.dataset.currentNome;
+    }
+}
+
+// Busca cidades na API do IBGE via proxy Django
+async function buscarCidades(termo) {
+    const estado = selEstado.value;
+    if (!estado) return [];
+    const url = `/api/cidades-ibge/?estado=${estado}&search=${encodeURIComponent(termo)}`;
+    const res = await fetch(url);
+    if (!res.ok) return [];
+    return await res.json();
+}
+
+function mostrarSugestoes(cidades) {
+    sugestoes.innerHTML = '';
+    if (!cidades.length) {
+        sugestoes.style.display = 'none';
+        return;
+    }
+    cidades.forEach(c => {
+        const li = document.createElement('li');
+        li.textContent = c.estado ? `${c.nome} / ${c.estado.uf}` : c.nome;
+        li.style.cssText = 'padding:8px 12px;cursor:pointer;font-size:0.9rem;border-bottom:1px solid #f0f0f0;';
+        li.addEventListener('mousedown', () => {
+            inputCidade.value = c.nome;
+            inputIbge.value   = c.codigo_ibge;
+            sugestoes.style.display = 'none';
+        });
+        li.addEventListener('mouseover', () => li.style.background = '#f0f4ff');
+        li.addEventListener('mouseout',  () => li.style.background = '');
+        sugestoes.appendChild(li);
+    });
+    sugestoes.style.display = 'block';
+}
+
+inputCidade.addEventListener('input', function () {
+    const termo = this.value.trim();
+    inputIbge.value = '';          // limpa o ibge até o usuário confirmar a seleção
+    clearTimeout(debounceTimer);
+    if (termo.length < 2) {
+        sugestoes.style.display = 'none';
+        return;
+    }
+    debounceTimer = setTimeout(async () => {
+        const cidades = await buscarCidades(termo);
+        mostrarSugestoes(cidades);
+    }, 300);
+});
+
+// Fecha sugestões ao perder foco
+inputCidade.addEventListener('blur', () => {
+    setTimeout(() => { sugestoes.style.display = 'none'; }, 150);
+});
+
+// Ao trocar o estado, limpa cidade e ibge
+selEstado.addEventListener('change', function () {
+    inputCidade.value = '';
+    inputIbge.value   = '';
+    sugestoes.style.display = 'none';
+});
+
+carregarEstados();
+
+// ── Submit ─────────────────────────────────────────────────────────────────
+document.getElementById('formClube').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const btn = document.getElementById('btnSalvar');
+    const alertBox = document.getElementById('alertBox');
+    const pk = this.dataset.pk;
+    const isEdit = !!pk;
+
+    if (!inputIbge.value) {
+        alertBox.className = 'alert alert-warning';
+        alertBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-2"></i>Selecione o estado e a cidade.';
+        alertBox.classList.remove('d-none');
+        return;
+    }
+
+    // Animação de carregamento do botão
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Salvando...';
+
+    // Captura os dados do formulário
+    const formData = new FormData(this);
+    const payload = {
+        nome_clube: formData.get('nome_clube'),
+        nickname: formData.get('nickname'),
+        sigla: formData.get('sigla'),
+        data_fundacao: formData.get('data_fundacao'),
+        gestao: formData.get('gestao'),
+        estadio: formData.get('estadio_oficial'),
+        cor_primaria: formData.get('cor_principal'),
+        cor_secundaria: formData.get('cor_secundaria'),
+        cor_terciaria: formData.get('outra_cor'),
+        website: formData.get('site_oficial'),
+        descricao: formData.get('observacao'),
+        ativo: formData.get('ativo') === 'on',
+        codigo_ibge: parseInt(formData.get('codigo_ibge')),
+        escudo: formData.get('escudo') || null
+    };
+
+    // Pega o token CSRF
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    const url = isEdit ? `/api/clubes/${pk}/` : '/api/clubes/';
+    const method = isEdit ? 'PUT' : 'POST';
+
+    try {
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alertBox.className = 'alert alert-success';
+            if (isEdit) {
+                alertBox.innerHTML = `<i class="fa-solid fa-circle-check me-2"></i>Clube <strong>${data.nome_clube}</strong> atualizado com sucesso!`;
+            } else {
+                alertBox.innerHTML = `<i class="fa-solid fa-circle-check me-2"></i>Clube <strong>${data.nome_clube}</strong> cadastrado com sucesso!`;
+                window.location.href = '/clube/';
+            }
+            alertBox.classList.remove('d-none');
+        } else {
+            alertBox.className = 'alert alert-danger';
+            alertBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation me-2"></i>Erro ao salvar: ${JSON.stringify(data)}`;
+            alertBox.classList.remove('d-none');
+        }
+    } catch (err) {
+        alertBox.className = 'alert alert-danger';
+        alertBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-2"></i>Ocorreu um erro de conexão com a API.';
+        alertBox.classList.remove('d-none');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-check me-2"></i>${isEdit ? 'Atualizar Clube' : 'Cadastrar Clube'}`;
+    }
+});
+</script>
+
+{% endblock %}

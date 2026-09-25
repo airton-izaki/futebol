@@ -40,31 +40,30 @@ class Estado(models.Model):
     def __str__(self):
         return f"{self.uf} - {self.nome_estado}"
 
-
 # ────────────────────────────────────────────────────────────────────────
 # Cidades 
 # ────────────────────────────────────────────────────────────────────────
 class Cidade(models.Model):
     codigo_ibge = models.IntegerField(
-        primary_key = True,
-        help_text = "Código IBGE de 7 dígitos (ex: 3550308 para São Paulo)"
+        primary_key=True,
+        help_text="Código IBGE de 7 dígitos (ex: 3550308 para São Paulo)"
     )
     nome_cidade = models.CharField(
-        verbose_name = "Nome da Cidade",
-        max_length   = 100,
+        verbose_name="Nome da Cidade",
+        max_length=100,
     )
     estado = models.ForeignKey(
         Estado,
-        verbose_name = "Estado / UF",        
-        on_delete    = models.PROTECT,
-        null         = True,
-        blank        = True,
-        related_name = 'cidades',
+        verbose_name="Estado / UF",        
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='cidades',
     )
     pais = models.CharField(
-        verbose_name = "País",
-        max_length   = 50,
-        default      = "Brasil",
+        verbose_name="País",
+        max_length=50,
+        default="Brasil",
     )
 
     class Meta:

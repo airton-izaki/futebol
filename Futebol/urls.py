@@ -14,23 +14,33 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
-from django.conf import settings
+from django.conf            import settings
 from django.conf.urls.static import static
+from rest_framework.routers import DefaultRouter
+from django.contrib         import admin
+from django.urls            import path, include
+from app_home.views         import HomeView
+from app_clube.views        import ClubeViewSet, ClubeCreateView, ClubeListView, ClubeUpdateView
+from app_localizacao.views  import EstadoViewSet, CidadeViewSet, CidadesIBGEView
 
-from app_home.views     import HomeView
-from app_clube.views    import Campeonato_Futebol
+router = DefaultRouter()
+router.register(r'clubes',   ClubeViewSet,  basename ='clube')
+router.register(r'estados',  EstadoViewSet, basename ='estado')
+router.register(r'cidades',  CidadeViewSet, basename ='cidade')
 
 
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('',                    HomeView.as_view(),         name ='index'),
 
-    path('',                    HomeView.as_view(),             name = 'index'),
-    path('campeonatofutebol/',  Campeonato_Futebol.as_view(),   name = 'clube'),
-    path('api/',                include('app_localizacao.urls')),
+    path('clube/cadastrar',     ClubeCreateView.as_view(),  name ='criar_clube'),
+    path('clube/',              ClubeListView.as_view(),    name ='clube'),
+    path('editar/<int:pk>/',    ClubeUpdateView.as_view(),  name ='editar_clube'),
+
+    path('api/cidades-ibge/',   CidadesIBGEView.as_view(),  name ='cidades_ibge'),
+
+    path('api/',  include(router.urls)),
 
 
 

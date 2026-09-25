@@ -7,6 +7,145 @@
 {% load static %}
 
 {% block content %}
-    <h1>Home Page</h1>    
-    <a  class = "btn" href = "{% url 'clube' %}">Clube</a>
+<style>
+    span {
+        color: #263449;
+    }
+    .classificacao-wrap {
+        max-width: 1120px;
+        margin: 3rem auto;
+        padding: 0 1rem;
+    }
+    .classificacao-titulo {
+        color: #687386;
+        font-size: .78rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: .02em;
+    }
+    .tabela-classificacao {
+        min-width: 760px;
+        border-collapse: separate;
+        border-spacing: 0;
+        color: #263449;
+        font-size: .9rem;
+    }
+    .tabela-classificacao th {
+        height: 42px;
+        color: #778397;
+        font-size: .72rem;
+        font-weight: 500;
+        text-align: center;
+        border-top: 1px solid #d9dce1;
+        border-bottom: 1px solid #d9dce1;
+    }
+    .tabela-classificacao th:first-child {
+        min-width: 250px;
+        text-align: left;
+        border-right: 1px solid #aeb4bd;
+    }
+    .tabela-classificacao td {
+        height: 55px;
+        text-align: center;
+        border-bottom: 1px solid #d9dce1;
+    }
+    .tabela-classificacao td.pontos {
+        background: #f2f3f5;
+        font-weight: 700;
+    }
+    .tabela-classificacao .time {
+        padding: 0 .75rem 0 0;
+        text-align: left;
+        border-right: 1px solid #aeb4bd;
+        white-space: nowrap;
+    }
+    .time-linha {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    .time-posicao {
+        width: 1rem;
+        color: #102cff;
+        font-size: 1rem;
+        text-align: center;
+    }
+    .time-variacao {
+        margin-left: auto;
+        color: #aab0ba;
+        font-size: .68rem;
+    }
+    .time-variacao.subiu { color: #239b35; }
+</style>
+
+<section class="classificacao-wrap" aria-labelledby="titulo-classificacao">
+    <h1 id="titulo-classificacao" class="classificacao-titulo">Classificação</h1>
+    <div class="table-responsive">
+        <table class="table tabela-classificacao mb-0">
+            <thead>
+                <tr>
+                    <th scope="col">Classificação</th>
+                    <th scope="col">Pontos</th>
+                    <th scope="col">Jogos</th>
+                    <th scope="col">Vitórias</th>
+                    <th scope="col">Empates</th>
+                    <th scope="col">Derrotas</th>
+                    <th scope="col">Gols Marados</th>
+                    <th scope="col">Gols Sofridos</th>
+                    <th scope="col">Saldo de Gols</th>
+                    <th scope="col">%</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="time">
+                        <div class="time-linha">
+                            <span class="time-posicao">1</span>
+                            <span>Flamengo</span>                            
+                        </div>
+                    </td>
+                    <td class="pontos">
+                        60
+                    </td>
+                    <td>
+                        28
+                    </td>
+                    <td>
+                        18
+                    </td>
+                    <td>
+                        6
+                    </td>
+                    <td>
+                        4
+                    </td>
+                    <td>
+                        55
+                    </td>
+                    <td>
+                        23
+                    </td>
+                    <td>
+                        32
+                    </td>
+                    <td>
+                        71
+                    </td>
+                </tr>
+                <tr>
+                    <td class="time"><div class="time-linha"><span class="time-posicao">2</span><span>Palmeiras</span></div></td>
+                    <td class="pontos">57</td><td>28</td><td>16</td><td>9</td><td>3</td><td>47</td><td>21</td><td>26</td><td>67</td>
+                </tr>
+                <tr>
+                    <td class="time"><div class="time-linha"><span class="time-posicao">3</span><span>Athletico-PR</span><span class="time-variacao">0 ■</span></div></td>
+                    <td class="pontos">49</td><td>28</td><td>14</td><td>7</td><td>7</td><td>43</td><td>32</td><td>11</td><td>58</td>
+                </tr>
+                <tr>
+                    <td class="time"><div class="time-linha"><span class="time-posicao">4</span><span>Fluminense</span><span class="time-variacao subiu">1 ▲</span></div></td>
+                    <td class="pontos">48</td><td>28</td><td>13</td><td>9</td><td>6</td><td>44</td><td>36</td><td>8</td><td>57</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
 {% endblock %}
