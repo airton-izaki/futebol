@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'app_campeonato',
     'app_clube',
     'app_home',
     'app_localizacao',

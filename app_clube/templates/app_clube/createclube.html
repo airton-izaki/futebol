@@ -129,6 +129,11 @@
                                         <option value="HIBRIDO" {% if object.gestao == 'HIBRIDO' %}selected{% endif %}>Híbrido</option>
                                     </select>
                                 </div>
+                                <!-- País -->
+                                <div class="col-md-3">
+                                    <label for="pais" class="form-label">País</label>
+                                    <input type="text" class="form-control" id="pais" name="pais" placeholder="Ex: Brasil" value="{% if object %}{{ object.pais }}{% endif %}">
+                                </div>
                                 <!-- Estado -->
                                 <div class="col-md-4">
                                     <label for="select_estado" class="form-label">Estado *</label>
